@@ -1,3 +1,6 @@
+language: java
+./gradlew assemble
+./gradlew check
 deploy:
   provider: heroku
   api_key:
