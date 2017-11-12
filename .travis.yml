@@ -1,5 +1,5 @@
 language: java
-script: ./gradlew build test
+script: "./gradlew build test"
 deploy:
   provider: heroku
   api_key:
@@ -7,3 +7,6 @@ deploy:
   app: slacktionary
   on:
     repo: brandonmanson/slacktionary
+notifications:
+  slack:
+    secure: WmQ/ERyTyw/KGXdu5vX1ZQuhOobL8Wb+rr8LztWmCLlByPZQ5QICOvrfShBdYfHXcmyMR9AdbBEV53FDoIQPzSMkwwtY5CJkyd1VBfmfjyn79JlN+LJ+t4hy3kZZr/H8/Tu2FKwo8VyzDhO5LIEAoCVy894DyR7kK2afH5Z11YCEUWepTBwj8jX/YQPnd8hk8bYDtS7WltuIEa2Is6kLbiickNrTFluG/unaNxHtHvIiAXGYNppv6LWNWlrqtDPjPB5x0fcCEBQc5OSxWpO7hnjWL1UuY3EYwv9nz5bVrCTwDxil5d6WqWvXMy3tORMmMLIwqsIlJcqjwrBFEt5XTWEwbDzimb8MuREGEwBbcvQ7o+3M8hrQ2NsXFU+TQjUD3M8t3D/XVBJJtjr09vkQdMeayTyAGFxDPbmTZkCnggMqw1mQVeOK/+dTKddFvE4MF3fPHsqK1r6tqs5uIPUgHyTCMgFEFev1lv+HkX/A++BOjwcy1MgGkOhdMhGue67Sfyj9IzznBpFtnIO55Iyt8gQyxqw1PY4kEQG5HB62ok07KTtRnEjCYLvDwc9dJdCjBCwlyHlPgFpvDZfFdnSWRO1SS75NX3jVlNdgPJHX4kyTYc1wKs0cOyaYouDaQ0/XkK5TGHltALRbm3CnSISyXIlBTYlk4hahSpJKgaeFcMQ=
