@@ -13,6 +13,7 @@ public class PhraseLibraryTest {
 
     @Test
     public void getRandomPhraseShouldNotBeNull() {
-        assertNotNull(PhraseLibrary.getRandomPhrase());
+        PhraseLibrary library = new PhraseLibrary();
+        assertNotNull(library.getRandomPhrase());
     }
 }

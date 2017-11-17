@@ -1,5 +1,7 @@
 package com.jsne.slacktionary.util;
 
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -8,7 +10,7 @@ import java.util.Random;
  */
 public class PhraseLibrary {
 
-    public static String getRandomPhrase() {
+    public String getRandomPhrase() {
         ArrayList<String> phrases = new ArrayList<>();
         phrases.add("A horse of a different color");
         phrases.add("Under the weather");

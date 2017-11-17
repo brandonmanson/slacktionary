@@ -1,22 +1,24 @@
 package com.jsne.slacktionary.controller;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.sun.org.apache.xpath.internal.operations.String;
-import org.junit.Before;
+import com.jsne.slacktionary.service.MessageBuilderService;
+import com.jsne.slacktionary.util.MessageBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
-import org.springframework.test.web.servlet.MvcResult;
 
-import java.nio.charset.Charset;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by brandonmanson on 11/11/17.
@@ -25,12 +27,19 @@ import java.nio.charset.Charset;
 @WebMvcTest(SlashCommandController.class)
 public class SlashCommandControllerTest {
 
+    private MessageBuilder builder = new MessageBuilder();
+
     @Autowired
     MockMvc mockMvc;
 
+    @MockBean
+    MessageBuilderService messageBuilderService;
 
     @Test
-    public void controllerShouldReturnPhraseFromDictionary() throws Exception {
+    public void controllerShouldPostNewGameMessage() throws Exception {
+
+        when(messageBuilderService.createNewGameMessage()).thenReturn(builder.createNewGameMessage());
+        JsonNode newGameMessage = builder.createNewGameMessage();
 
         mockMvc.perform(post("/command")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
@@ -40,11 +49,51 @@ public class SlashCommandControllerTest {
                 .param("channel_id", "C2147483705")
                 .param("channel_name", "test")
                 .param("user_id", "U2147483697")
-                .param("command", "/new")
-                .param("text", "")
+                .param("command", "/slacktionary")
+                .param("text", "new")
                 .param("response_url", "https://hooks.slack.com/commands/1234/5678")
                 .param("trigger_id", "13345224609.738474920.8088930838d88f008e0"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(new MediaType("text", "plain", Charset.forName("UTF-8"))));
+                .andExpect(content().json(newGameMessage.toString()));
+    }
+
+    @Test
+    public void controllerShouldPostJoinGameMessage() throws Exception {
+        when(messageBuilderService.createJoinResponseMessage()).thenReturn(builder.createJoinResponseMessage());
+        JsonNode joinResponseMessage = builder.createJoinResponseMessage();
+        mockMvc.perform(post("/command")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                .param("token", "gIkuvaNzQIHg97ATvDxqgjtO")
+                .param("team_id", "T0001")
+                .param("team_domain", "example")
+                .param("channel_id", "C2147483705")
+                .param("channel_name", "test")
+                .param("user_id", "U2147483697")
+                .param("command", "/slacktionary")
+                .param("text", "join")
+                .param("response_url", "https://hooks.slack.com/commands/1234/5678")
+                .param("trigger_id", "13345224609.738474920.8088930838d88f008e0"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(joinResponseMessage.toString()));
+    }
+
+    @Test
+    public void controllerShouldPostGuessResponseMessage() throws Exception {
+        when(messageBuilderService.createGuessResponseMessage()).thenReturn(builder.createGuessResponseMessage());
+        JsonNode joinResponseMessage = builder.createGuessResponseMessage();
+        mockMvc.perform(post("/command")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                .param("token", "gIkuvaNzQIHg97ATvDxqgjtO")
+                .param("team_id", "T0001")
+                .param("team_domain", "example")
+                .param("channel_id", "C2147483705")
+                .param("channel_name", "test")
+                .param("user_id", "U2147483697")
+                .param("command", "/slacktionary")
+                .param("text", "guess")
+                .param("response_url", "https://hooks.slack.com/commands/1234/5678")
+                .param("trigger_id", "13345224609.738474920.8088930838d88f008e0"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(joinResponseMessage.toString()));
     }
 }
