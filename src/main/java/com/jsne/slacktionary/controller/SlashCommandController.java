@@ -28,9 +28,9 @@ public class SlashCommandController {
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     public JsonNode processSlashCommand(WebRequest request) throws JsonProcessingException {
-        JsonNode node;
-        if (request.getParameter("command").equals("/slacktionary") && request.getParameter("text") != null)
+        if (request.getParameter("command").equals("/slacktionary") && !request.getParameter("text").isEmpty())
         {
+            JsonNode node;
             if (request.getParameter("text").equals("new"))
             {
                 node = service.createNewGameMessage();
@@ -44,8 +44,12 @@ public class SlashCommandController {
                 node = service.createGuessResponseMessage();
                 return node;
             }
+            else if (request.getParameter("text").equals("help"))
+            {
+                node = service.createHelpMessage();
+                return node;
+            }
         }
-        node = service.createWinnerNotificationMessage();
-        return node;
+        return service.createHelpMessage();
     }
 }

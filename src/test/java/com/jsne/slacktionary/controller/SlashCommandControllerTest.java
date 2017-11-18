@@ -96,4 +96,46 @@ public class SlashCommandControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(joinResponseMessage.toString()));
     }
+
+    @Test
+    public void controllerShouldPostHelpMessageWhenTextFieldIsEmpty() throws Exception {
+        when(messageBuilderService.createHelpMessage()).thenReturn(builder.createHelpMessage());
+        JsonNode joinResponseMessage = builder.createHelpMessage();
+        mockMvc.perform(post("/command")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                .param("token", "gIkuvaNzQIHg97ATvDxqgjtO")
+                .param("team_id", "T0001")
+                .param("team_domain", "example")
+                .param("channel_id", "C2147483705")
+                .param("channel_name", "test")
+                .param("user_id", "U2147483697")
+                .param("command", "/slacktionary")
+                .param("text", "")
+                .param("response_url", "https://hooks.slack.com/commands/1234/5678")
+                .param("trigger_id", "13345224609.738474920.8088930838d88f008e0"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(joinResponseMessage.toString()));
+    }
+
+    @Test
+    public void controllerShouldPostHelpMessageWhenCommandIsHelp() throws Exception {
+        when(messageBuilderService.createHelpMessage()).thenReturn(builder.createHelpMessage());
+        JsonNode joinResponseMessage = builder.createHelpMessage();
+        mockMvc.perform(post("/command")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                .param("token", "gIkuvaNzQIHg97ATvDxqgjtO")
+                .param("team_id", "T0001")
+                .param("team_domain", "example")
+                .param("channel_id", "C2147483705")
+                .param("channel_name", "test")
+                .param("user_id", "U2147483697")
+                .param("command", "/slacktionary")
+                .param("text", "help")
+                .param("response_url", "https://hooks.slack.com/commands/1234/5678")
+                .param("trigger_id", "13345224609.738474920.8088930838d88f008e0"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(joinResponseMessage.toString()));
+    }
 }
+
+

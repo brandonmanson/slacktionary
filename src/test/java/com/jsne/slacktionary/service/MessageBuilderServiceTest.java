@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.jsne.slacktionary.util.MessageBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -22,89 +23,52 @@ import static org.mockito.Mockito.when;
 public class MessageBuilderServiceTest {
 
     private ObjectMapper mapper = new ObjectMapper();
+    private MessageBuilder builder = new MessageBuilder();
 
     @SpyBean
     private MessageBuilderService service;
 
     @Test
     public void newGameMessageShouldBeReturned() {
-        Mockito.when(service.createNewGameMessage()).thenReturn(createNewGameMessage());
+        Mockito.when(service.createNewGameMessage()).thenReturn(builder.createNewGameMessage());
         JsonNode newGameMessage = service.createNewGameMessage();
-        assertEquals(createNewGameMessage(), newGameMessage);
+        assertEquals(builder.createNewGameMessage(), newGameMessage);
     }
 
     @Test
     public void newPhraseMessageShouldBeReturned() {
-        when(service.createPhraseMessage()).thenReturn(createPhraseMessage());
-        JsonNode phraseMessage = service.createPhraseMessage();
-        assertEquals(createPhraseMessage(), phraseMessage);
+        when(service.createPhraseMessage("channel", "user", "token")).thenReturn(builder.createPhraseMessage("channel", "user", "token"));
+        JsonNode phraseMessage = service.createPhraseMessage("channel", "user", "token");
+        assertEquals(builder.createPhraseMessage("channel", "user", "token"), phraseMessage);
     }
 
     @Test
     public void joinResponseMessageShouldBeReturned() {
-        when(service.createJoinResponseMessage()).thenReturn(createJoinResponseMessage());
+        when(service.createJoinResponseMessage()).thenReturn(builder.createJoinResponseMessage());
         JsonNode joinResponseMessage = service.createJoinResponseMessage();
-        assertEquals(createJoinResponseMessage(), joinResponseMessage);
+        assertEquals(builder.createJoinResponseMessage(), joinResponseMessage);
     }
 
     @Test
     public void guessResponseMessageShouldBeReturned() {
-        when(service.createGuessResponseMessage()).thenReturn(createGuessResponseMessage());
+        when(service.createGuessResponseMessage()).thenReturn(builder.createGuessResponseMessage());
         JsonNode guessResponseMessage = service.createGuessResponseMessage();
-        assertEquals(createGuessResponseMessage(), guessResponseMessage);
+        assertEquals(builder.createGuessResponseMessage(), guessResponseMessage);
     }
 
     @Test
     public void winnerNotificationMessageShouldBeReturned() {
-        when(service.createWinnerNotificationMessage()).thenReturn(createWinnerNotificationMessage());
-        JsonNode winnerNotificationMessage = createWinnerNotificationMessage();
-        assertEquals(createWinnerNotificationMessage(), winnerNotificationMessage);
+        when(service.createWinnerNotificationMessage("channel", "user", "token")).thenReturn(builder.createWinnerNotificationMessage("channel", "user", "token"));
+        JsonNode winnerNotificationMessage = service.createWinnerNotificationMessage("channel", "user", "token");
+        assertEquals(builder.createWinnerNotificationMessage("channel", "user", "token"), winnerNotificationMessage);
     }
 
-    private JsonNode createNewGameMessage() {
-        ObjectNode node = mapper.createObjectNode();
-        ArrayNode attachments = mapper.createArrayNode();
-        ObjectNode attachmentNode = mapper.createObjectNode();
-        attachmentNode.put("text", "Enter `/slacktionary join` to join the fun!");
-        attachments.add(attachmentNode);
-        node.put("response_type", "in_channel");
-        node.put("text", "Attention! :speaker: New game of Slacktionary starting soon!");
-        node.putPOJO("attachments", attachments);
-        return node;
-    }
+    @Test
+    public void helpMessageShouldBeReturned() {
+        when(service.createHelpMessage()).thenReturn(builder.createHelpMessage());
+        JsonNode helpMessage = service.createHelpMessage();
+        assertEquals(builder.createHelpMessage(), helpMessage);
 
-    private JsonNode createPhraseMessage() {
-        ObjectNode node = mapper.createObjectNode();
-        ArrayNode attachments = mapper.createArrayNode();
-        ObjectNode attachment = mapper.createObjectNode();
-        attachment.put("title", "Your Phrase :eyes:");
-        attachment.put("text", "A horse of a different color");
-        attachments.add(attachment);
-        node.putPOJO("attachments", attachments);
-        return node;
-    }
 
-    private JsonNode createJoinResponseMessage() {
-        ObjectNode node = mapper.createObjectNode();
-        node.put("response_type", "ephemeral");
-        node.put("text", "You're in! Be on the :telescope: :eyes: for some emojis soon.");
-        return node;
-    }
-
-    private JsonNode createGuessResponseMessage() {
-        ObjectNode node = mapper.createObjectNode();
-        node.put("response_type", "ephemeral");
-        node.put("text", "Guess recorded. Just remember, if you ain't first you're last!");
-        return node;
-    }
-
-    private JsonNode createWinnerNotificationMessage() {
-        ObjectNode node = mapper.createObjectNode();
-        ArrayNode attachments = mapper.createArrayNode();
-        ObjectNode attachment = mapper.createObjectNode();
-        attachment.put("title", "USER TBD :clap: :tada: :white_check_mark:");
-        node.put("text", ":checkered_flag: WE HAVE A WINNER :checkered_flag:");
-        node.putPOJO("attachments", attachments);
-        return node;
     }
 }
