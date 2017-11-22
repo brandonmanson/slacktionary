@@ -21,11 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringRunner.class)
 public class ChannelStateManagerServiceTest {
 
-    // Make channel active
-    // Make channel inactive
-    // Add a user to the players list
-    // Add a guess to the guess list
-
     private final String PHRASE = "A horse of a different color";
     private final String USER_ID = "U1234567";
     private final String ACTIVE_CHANNEL_ID = "C2147483705";
@@ -59,6 +54,12 @@ public class ChannelStateManagerServiceTest {
     public void channelShouldHaveActiveGame() {
         Mockito.when(repository.findByChannelId(ACTIVE_CHANNEL_ID)).thenReturn(activeChannelsList);
         assertThat(service.setChannelToActive(ACTIVE_CHANNEL_ID, USER_ID, TOKEN).isHasActiveGame()).isEqualTo(true);
+    }
+
+    @Test
+    public void activeChannelShouldBeReturnedWhenInactiveChannelFound() {
+        Mockito.when(repository.findByChannelId(INACTIVE_CHANNEL_ID)).thenReturn(inactiveChannelsList);
+        assertThat(service.setChannelToActive(INACTIVE_CHANNEL_ID, USER_ID, TOKEN).isHasActiveGame()).isEqualTo(true);
     }
 
     @Test
@@ -101,6 +102,12 @@ public class ChannelStateManagerServiceTest {
     public void playerListShouldBeSizeOf1() {
         Mockito.when(repository.findByChannelId(ACTIVE_CHANNEL_ID)).thenReturn(activeChannelsList);
         assertThat(service.addPlayerToActiveChannel(ACTIVE_CHANNEL_ID, "U123456789").getPlayers().size()).isEqualTo(1);
+    }
+
+    @Test
+    public void returnShouldBeNullWhenPlayerIsAddedToNonexistentChannel() {
+        Mockito.when(repository.findByChannelId(ACTIVE_CHANNEL_ID)).thenReturn(emptyChannelsList);
+        assertThat(service.addPlayerToActiveChannel(ACTIVE_CHANNEL_ID, USER_ID)).isEqualTo(null);
     }
 
 

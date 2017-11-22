@@ -21,7 +21,6 @@ public class ChannelStateManagerService {
 
 
     public Channel setChannelToActive(String channelId, String userId, String token) {
-        System.out.println("-----REPOSITORY-----" + repository);
         List<Channel> channels = repository.findByChannelId(channelId);
         if (channels.size() > 0)
         {
@@ -37,7 +36,6 @@ public class ChannelStateManagerService {
         }
         else
         {
-            System.out.println("IN ELSE BLOCK");
             Channel newChannel = new Channel(channelId, token);
             newChannel.setToActive(library.getRandomPhrase(), userId);
             repository.save(newChannel);

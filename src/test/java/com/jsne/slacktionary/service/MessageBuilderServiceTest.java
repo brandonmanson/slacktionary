@@ -17,14 +17,12 @@ import static org.mockito.Mockito.when;
  * Created by brandonmanson on 11/16/17.
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
 public class MessageBuilderServiceTest {
 
-    private ObjectMapper mapper = new ObjectMapper();
     private MessageBuilder builder = new MessageBuilder();
 
     @SpyBean
-    private MessageBuilderService service;
+    MessageBuilderService service;
 
     @Test
     public void newGameMessageShouldBeReturned() {
