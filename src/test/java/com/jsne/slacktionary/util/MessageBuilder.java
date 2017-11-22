@@ -76,7 +76,7 @@ public class MessageBuilder {
         attachments.add(createAttachment("Get Help", "See the list of available commands for Slacktionary", "help"));
         node.put("response_type", "ephemeral");
         node.put("text", "Slacktionary is the game that gives you a random phrase that you'll transcribe into emojis for your friends to guess.\n\nFor instance, for \"A horse of a different color\", you might post something like:\n :horse: :blue_heart: :green_heart: :yellow_heart: :heart:\n\nMake sense? :thumbsup: :raised_hands: Here's how to get started.");
-        node.put("attachments", attachments);
+        node.putPOJO("attachments", attachments);
         return node;
     }
 

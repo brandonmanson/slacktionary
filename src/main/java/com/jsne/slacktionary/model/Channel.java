@@ -1,21 +1,30 @@
 package com.jsne.slacktionary.model;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by brandonmanson on 11/18/17.
  */
+@Entity
 public class Channel {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     private String channelId;
     private String activePhrase;
     private String activeUserId;
     private String token;
+
+    @ElementCollection
     private List<String> players;
     private boolean hasActiveGame;
 
-    public Channel() {}
+    public Channel() {
+    }
 
     public Channel(String channelId, String token) {
         this.channelId = channelId;
@@ -24,6 +33,14 @@ public class Channel {
         this.activeUserId = null;
         this.players = new ArrayList<String>();
         this.hasActiveGame = false;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getChannelId() {
