@@ -33,6 +33,11 @@ public class SlashCommandProcessorService {
         return builderService.createNewGameMessage();
     }
 
+    public JsonNode processJoinCommand(String channelId, String userId) {
+        stateManagerService.addPlayerToActiveChannel(channelId, userId);
+        return builderService.createJoinResponseMessage();
+    }
+
     private HttpEntity<JsonNode> setupHttpClient(Channel channel, JsonNode body) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + channel.getToken());

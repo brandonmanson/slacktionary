@@ -5,11 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jsne.slacktionary.service.MessageBuilderService;
+import com.jsne.slacktionary.service.SlashCommandProcessorService;
 import com.jsne.slacktionary.util.MessageBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -27,6 +29,9 @@ import static org.mockito.Mockito.when;
 @WebMvcTest(SlashCommandController.class)
 public class SlashCommandControllerTest {
 
+    private String CHANNEL_ID = "C2147483705";
+    private String USER_ID = "U2147483697";
+    private String TOKEN = "gIkuvaNzQIHg97ATvDxqgjtO";
     private MessageBuilder builder = new MessageBuilder();
 
     @Autowired
@@ -35,10 +40,13 @@ public class SlashCommandControllerTest {
     @MockBean
     MessageBuilderService messageBuilderService;
 
+    @MockBean
+    SlashCommandProcessorService commandProcessorService;
+
     @Test
     public void controllerShouldPostNewGameMessage() throws Exception {
 
-        when(messageBuilderService.createNewGameMessage()).thenReturn(builder.createNewGameMessage());
+        when(commandProcessorService.processNewGameCommand(CHANNEL_ID, USER_ID, TOKEN)).thenReturn(builder.createNewGameMessage());
         JsonNode newGameMessage = builder.createNewGameMessage();
 
         mockMvc.perform(post("/command")

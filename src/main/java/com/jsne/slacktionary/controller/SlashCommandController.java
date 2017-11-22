@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jsne.slacktionary.service.MessageBuilderService;
+import com.jsne.slacktionary.service.SlashCommandProcessorService;
 import com.jsne.slacktionary.util.PhraseLibrary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,10 @@ import org.springframework.web.context.request.WebRequest;
 public class SlashCommandController {
 
     @Autowired
-    MessageBuilderService service;
+    MessageBuilderService builderService;
+
+    @Autowired
+    SlashCommandProcessorService processorService;
 
     @RequestMapping(value = "/command", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @ResponseBody
@@ -33,23 +37,23 @@ public class SlashCommandController {
             JsonNode node;
             if (request.getParameter("text").equals("new"))
             {
-                node = service.createNewGameMessage();
+                node = processorService.processNewGameCommand(request.getParameter("channel_id"), request.getParameter("user_id"), request.getParameter("token"));
                 return node;
             } else if (request.getParameter("text").equals("join"))
             {
-                node = service.createJoinResponseMessage();
+                node = builderService.createJoinResponseMessage();
                 return node;
             } else if (request.getParameter("text").equals("guess"))
             {
-                node = service.createGuessResponseMessage();
+                node = builderService.createGuessResponseMessage();
                 return node;
             }
             else if (request.getParameter("text").equals("help"))
             {
-                node = service.createHelpMessage();
+                node = builderService.createHelpMessage();
                 return node;
             }
         }
-        return service.createHelpMessage();
+        return builderService.createHelpMessage();
     }
 }
