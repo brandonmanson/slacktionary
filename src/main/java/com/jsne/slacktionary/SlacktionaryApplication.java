@@ -14,8 +14,7 @@ public class SlacktionaryApplication {
 	}
 
 	@Bean
-	public RestTemplate restTemplate(RestTemplateBuilder builder) {
-		// Do any additional configuration here
-		return builder.build();
+	public RestTemplate restTemplate() {
+		return new RestTemplate();
 	}
 }
