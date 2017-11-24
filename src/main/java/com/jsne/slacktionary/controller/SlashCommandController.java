@@ -32,6 +32,7 @@ public class SlashCommandController {
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     public JsonNode processSlashCommand(WebRequest request) throws JsonProcessingException {
+        System.out.println(request.toString());
         if (request.getParameter("command").equals("/slacktionary") && !request.getParameter("text").isEmpty())
         {
             JsonNode node;
