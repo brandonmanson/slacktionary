@@ -38,6 +38,7 @@ public class SlashCommandController {
             JsonNode node;
             if (request.getParameter("text").equals("new"))
             {
+                System.out.println("Text is new. Running processor service.");
                 node = processorService.processNewGameCommand(request.getParameter("channel_id"), request.getParameter("user_id"), request.getParameter("token"));
                 return node;
             } else if (request.getParameter("text").equals("join"))
