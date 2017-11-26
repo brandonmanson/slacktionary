@@ -14,6 +14,10 @@ public class Channel {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "teamId")
+    private Team team;
+
     private String channelId;
     private String activePhrase;
     private String activeUserId;
@@ -89,6 +93,14 @@ public class Channel {
 
     public void setPlayers(List<String> players) {
         this.players = players;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
     }
 
     public void setToActive(String phrase, String userId) {

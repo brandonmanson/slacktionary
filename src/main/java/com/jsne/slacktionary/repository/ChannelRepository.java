@@ -12,5 +12,5 @@ import java.util.List;
 @Repository
 public interface ChannelRepository extends CrudRepository<Channel, Long> {
 
-    public List<Channel> findByChannelId(String channelId);
+    List<Channel> findByChannelId(String channelId);
 }
