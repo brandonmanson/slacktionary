@@ -26,8 +26,8 @@ public class SlashCommandProcessorService {
     @Autowired
     RestTemplate restTemplate;
 
-    public JsonNode processNewGameCommand(String channelId, String userId, String token) {
-        Channel channel = stateManagerService.setChannelToActive(channelId, userId, token);
+    public JsonNode processNewGameCommand(String channelId, String userId, String teamId) {
+        Channel channel = stateManagerService.setChannelToActive(channelId, userId, teamId);
         HttpEntity<JsonNode> entity = setupHttpClient(channel, builderService.createPhraseMessage(channel.getChannelId(), channel.getActiveUserId(), channel.getToken()));
         restTemplate.postForEntity(EPHEMERAL_URL, entity, JsonNode.class);
         return builderService.createNewGameMessage();

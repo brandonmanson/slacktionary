@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jsne.slacktionary.model.Channel;
+import com.jsne.slacktionary.model.Team;
 import com.jsne.slacktionary.repository.ChannelRepository;
 import com.jsne.slacktionary.util.MessageBuilder;
 import com.jsne.slacktionary.util.PhraseLibrary;
@@ -32,9 +33,11 @@ public class SlashCommandProcessorServiceTest {
     private String CHANNEL_ID = "C2147483705";
     private String USER_ID_1 = "U2147483697";
     private String USER_ID_2 = "U1234567890";
+    private String TEAM_ID = "T001";
     private String TOKEN = "gIkuvaNzQIHg97ATvDxqgjtO";
     private String PHRASE = "A horse of a different color";
     private String URL = "https://slack.com/api/chat.postMessage";
+    private Team team;
     private Channel activeChannel;
     private HttpEntity httpEntity;
     private ResponseEntity responseEntity;
@@ -54,6 +57,7 @@ public class SlashCommandProcessorServiceTest {
 
     @Before
     public void setup() {
+        team = new Team(TEAM_ID, TOKEN);
         builder = new MessageBuilder();
         activeChannel = new Channel(CHANNEL_ID, TOKEN);
         activeChannel.setToActive(PHRASE, USER_ID_1);
@@ -63,18 +67,18 @@ public class SlashCommandProcessorServiceTest {
 
     @Test
     public void processingNewGameShouldReturnNewGameMessage() {
-        Mockito.when(stateManagerService.setChannelToActive(CHANNEL_ID, USER_ID_1, TOKEN)).thenReturn(activeChannel);
+        Mockito.when(stateManagerService.setChannelToActive(CHANNEL_ID, USER_ID_1, TEAM_ID)).thenReturn(activeChannel);
         Mockito.when(messageBuilderService.createNewGameMessage()).thenReturn(builder.createNewGameMessage());
         Mockito.when(restTemplate.postForEntity(URL, httpEntity, JsonNode.class)).thenReturn(responseEntity);
-        assertEquals(processorService.processNewGameCommand(CHANNEL_ID, USER_ID_1, TOKEN), builder.createNewGameMessage());
+        assertEquals(processorService.processNewGameCommand(CHANNEL_ID, USER_ID_1, TEAM_ID), builder.createNewGameMessage());
     }
 
     @Test
     public void verifyThatAPICallWasMadeWithCorrectData() {
         Mockito.when(restTemplate.postForEntity(URL, httpEntity, JsonNode.class)).thenReturn(responseEntity);
-        Mockito.when(stateManagerService.setChannelToActive(CHANNEL_ID, USER_ID_1, TOKEN)).thenReturn(activeChannel);
-        Mockito.when(messageBuilderService.createPhraseMessage(CHANNEL_ID, USER_ID_1, TOKEN)).thenReturn(builder.createPhraseMessage(CHANNEL_ID, USER_ID_1, TOKEN));
-        processorService.processNewGameCommand(CHANNEL_ID, USER_ID_1, TOKEN);
+        Mockito.when(stateManagerService.setChannelToActive(CHANNEL_ID, USER_ID_1, TEAM_ID)).thenReturn(activeChannel);
+        Mockito.when(messageBuilderService.createPhraseMessage(CHANNEL_ID, USER_ID_1, team.getToken())).thenReturn(builder.createPhraseMessage(CHANNEL_ID, USER_ID_1, TOKEN));
+        processorService.processNewGameCommand(CHANNEL_ID, USER_ID_1, TEAM_ID);
         Mockito.verify(restTemplate).postForEntity(URL, httpEntity, JsonNode.class);
     }
 
@@ -89,7 +93,7 @@ public class SlashCommandProcessorServiceTest {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + TOKEN);
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-        httpEntity = new HttpEntity<JsonNode>(builder.createPhraseMessage(CHANNEL_ID, USER_ID_1, TOKEN), headers);
+        httpEntity = new HttpEntity<JsonNode>(builder.createPhraseMessage(CHANNEL_ID, USER_ID_1, team.getToken()), headers);
         responseEntity = new ResponseEntity<JsonNode>(createSlackResponse(), HttpStatus.OK);
     }
 

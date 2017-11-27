@@ -32,14 +32,12 @@ public class SlashCommandController {
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     public JsonNode processSlashCommand(WebRequest request) throws JsonProcessingException {
-        System.out.println("TEXT PARAMETER: " + request.getParameter("text"));
         if (request.getParameter("command").equals("/slacktionary") && !request.getParameter("text").isEmpty())
         {
             JsonNode node;
             if (request.getParameter("text").equals("new"))
             {
-                System.out.println("Text is new. Running processor service.");
-                node = processorService.processNewGameCommand(request.getParameter("channel_id"), request.getParameter("user_id"), request.getParameter("token"));
+                node = processorService.processNewGameCommand(request.getParameter("channel_id"), request.getParameter("user_id"), request.getParameter("team_id"));
                 return node;
             } else if (request.getParameter("text").equals("join"))
             {

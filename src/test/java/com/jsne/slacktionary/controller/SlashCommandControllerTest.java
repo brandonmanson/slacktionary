@@ -28,6 +28,7 @@ public class SlashCommandControllerTest {
     private String CHANNEL_ID = "C2147483705";
     private String USER_ID = "U2147483697";
     private String TOKEN = "gIkuvaNzQIHg97ATvDxqgjtO";
+    private String TEAM_ID = "T0001";
     private MessageBuilder builder = new MessageBuilder();
 
     @Autowired
@@ -43,7 +44,7 @@ public class SlashCommandControllerTest {
     @Test
     public void controllerShouldPostNewGameMessage() throws Exception {
 
-        when(commandProcessorService.processNewGameCommand(CHANNEL_ID, USER_ID, TOKEN)).thenReturn(builder.createNewGameMessage());
+        when(commandProcessorService.processNewGameCommand(CHANNEL_ID, USER_ID, TEAM_ID)).thenReturn(builder.createNewGameMessage());
         JsonNode newGameMessage = builder.createNewGameMessage();
 
         mockMvc.perform(post("/command")
