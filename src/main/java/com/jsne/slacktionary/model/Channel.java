@@ -39,20 +39,8 @@ public class Channel {
         this.hasActiveGame = false;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getChannelId() {
         return channelId;
-    }
-
-    public void setChannelId(String channelId) {
-        this.channelId = channelId;
     }
 
     public String getActivePhrase() {
@@ -75,16 +63,8 @@ public class Channel {
         return token;
     }
 
-    public void setToken(String token) {
-        this.token = token;
-    }
-
     public boolean isHasActiveGame() {
         return hasActiveGame;
-    }
-
-    public void setHasActiveGame(boolean hasActiveGame) {
-        this.hasActiveGame = hasActiveGame;
     }
 
     public List<String> getPlayers() {
@@ -93,10 +73,6 @@ public class Channel {
 
     public void setPlayers(List<String> players) {
         this.players = players;
-    }
-
-    public Team getTeam() {
-        return team;
     }
 
     public void setTeam(Team team) {

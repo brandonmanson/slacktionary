@@ -1,17 +1,12 @@
 package com.jsne.slacktionary.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jsne.slacktionary.model.Team;
 import com.jsne.slacktionary.repository.TeamRepository;
-import org.hibernate.validator.constraints.URL;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -39,6 +34,7 @@ public class AuthenticationControllerTest {
     private final String TEAM_ID = "T0001";
     private final String CODE = "ABC123456";
     private final String URL_UNDER_TEST = "/auth/redirect";
+    private final String JSON_RESPONSE = "{\"access_token\":\"xoxp-XXXXXXXX-XXXXXXXX-XXXXX\",\"scope\":\"incoming-webhook,commands,bot\",\"team_name\":\"TEST TEAM\",\"team_id\":\"T0001\",\"incoming_webhook\":{\"url\":\"https://hooks.slack.com/TXXXXX/BXXXXX/XXXXXXXXXX\",\"channel\":\"#test_channel\",\"configuration_url\":\"https://teamname.slack.com/services/BXXXXX\"},\"bot\":{\"bot_user_id\":\"UTTTTTTTTTTR\",\"bot_access_token\":\"xoxb-XXXXXXXXXXXX-TTTTTTTTTTTTTT\"}}";
     private ResponseEntity response;
     private HttpEntity httpEntity;
     private Team team;
@@ -62,12 +58,6 @@ public class AuthenticationControllerTest {
     @MockBean
     TeamRepository repository;
 
-    private JsonNode setupJsonResponse() throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode root = mapper.readTree("{\"access_token\":\"xoxp-XXXXXXXX-XXXXXXXX-XXXXX\",\"scope\":\"incoming-webhook,commands,bot\",\"team_name\":\"TEST TEAM\",\"team_id\":\"T0001\",\"incoming_webhook\":{\"url\":\"https://hooks.slack.com/TXXXXX/BXXXXX/XXXXXXXXXX\",\"channel\":\"#test_channel\",\"configuration_url\":\"https://teamname.slack.com/services/BXXXXX\"},\"bot\":{\"bot_user_id\":\"UTTTTTTTTTTR\",\"bot_access_token\":\"xoxb-XXXXXXXXXXXX-TTTTTTTTTTTTTT\"}}");
-        return root;
-    }
-
     private void setupHttpClient() throws IOException {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -76,10 +66,9 @@ public class AuthenticationControllerTest {
         formData.add("client_id", clientId);
         formData.add("client_secret", clientSecret);
         formData.add("code", CODE);
-        formData.add("redirect_uri", String.format(redirectUri + "/auth/redirect"));
 
         httpEntity = new HttpEntity<MultiValueMap<String, String>>(formData, headers);
-        response = new ResponseEntity<JsonNode>(setupJsonResponse(), HttpStatus.OK);
+        response = new ResponseEntity<String>(JSON_RESPONSE, HttpStatus.OK);
     }
 
     @Before
@@ -88,7 +77,7 @@ public class AuthenticationControllerTest {
         teams = new ArrayList<>();
         teams.add(team);
         setupHttpClient();
-        Mockito.when(restTemplate.postForEntity(URL, httpEntity, JsonNode.class)).thenReturn(response);
+        Mockito.when(restTemplate.postForEntity(URL, httpEntity, String.class)).thenReturn(response);
     }
 
     @Test

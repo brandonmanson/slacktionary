@@ -22,22 +22,6 @@ public class Team {
         this.channels = new ArrayList<>();
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getTeamId() {
-        return teamId;
-    }
-
-    public void setTeamId(String teamId) {
-        this.teamId = teamId;
-    }
-
     public String getToken() {
         return token;
     }
@@ -48,9 +32,5 @@ public class Team {
 
     public List<Channel> getChannels() {
         return channels;
-    }
-
-    public void setChannels(List<Channel> channels) {
-        this.channels = channels;
     }
 }
