@@ -16,6 +16,8 @@ public class Team {
     @OneToMany(mappedBy = "team")
     private List<Channel> channels;
 
+    public Team() {}
+
     public Team(String teamId, String token) {
         this.teamId = teamId;
         this.token = token;
