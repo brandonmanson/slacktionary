@@ -15,7 +15,8 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class SlashCommandProcessorService {
 
-    private String EPHEMERAL_URL = "https://slack.com/api/chat.postMessage";
+    private String EPHEMERAL_URL = "https://slack.com/api/chat.postEphemeral";
+    private String MESSAGE_URL = "https://slack.com/api/chat.postMessage";
 
     @Autowired
     ChannelStateManagerService stateManagerService;
