@@ -140,12 +140,6 @@ public class ChannelStateManagerServiceTest {
     }
 
     @Test
-    public void userShouldNotBeAddedToPlayerListIfTheyAreActiveUser() {
-        Mockito.when(channelRepository.findByChannelId(ACTIVE_CHANNEL_ID)).thenReturn(activeChannelsList);
-        assertThat(service.addPlayerToActiveChannel(ACTIVE_CHANNEL_ID, USER_ID).getPlayers().size()).isEqualTo(0);
-    }
-
-    @Test
     public void nullShouldBeReturnedIfActiveUserTriesToJoin() {
         Mockito.when(channelRepository.findByChannelId(ACTIVE_CHANNEL_ID)).thenReturn(activeChannelsList);
         assertThat(service.addPlayerToActiveChannel(ACTIVE_CHANNEL_ID, USER_ID)).isEqualTo(null);
