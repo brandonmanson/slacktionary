@@ -36,7 +36,8 @@ public class SlashCommandProcessorServiceTest {
     private String TEAM_ID = "T001";
     private String TOKEN = "gIkuvaNzQIHg97ATvDxqgjtO";
     private String PHRASE = "A horse of a different color";
-    private String URL = "https://slack.com/api/chat.postMessage";
+    private String MESSAGE_URL = "https://slack.com/api/chat.postMessage";
+    private String EPHEMERAL_URL = "https://slack.com/api/chat.postEphemeral";
     private Team team;
     private Channel activeChannel;
     private HttpEntity httpEntity;
@@ -69,17 +70,17 @@ public class SlashCommandProcessorServiceTest {
     public void processingNewGameShouldReturnNewGameMessage() {
         Mockito.when(stateManagerService.setChannelToActive(CHANNEL_ID, USER_ID_1, TEAM_ID)).thenReturn(activeChannel);
         Mockito.when(messageBuilderService.createNewGameMessage()).thenReturn(builder.createNewGameMessage());
-        Mockito.when(restTemplate.postForEntity(URL, httpEntity, JsonNode.class)).thenReturn(responseEntity);
+        Mockito.when(restTemplate.postForEntity(EPHEMERAL_URL, httpEntity, JsonNode.class)).thenReturn(responseEntity);
         assertEquals(processorService.processNewGameCommand(CHANNEL_ID, USER_ID_1, TEAM_ID), builder.createNewGameMessage());
     }
 
     @Test
     public void verifyThatAPICallWasMadeWithCorrectData() {
-        Mockito.when(restTemplate.postForEntity(URL, httpEntity, JsonNode.class)).thenReturn(responseEntity);
+        Mockito.when(restTemplate.postForEntity(EPHEMERAL_URL, httpEntity, JsonNode.class)).thenReturn(responseEntity);
         Mockito.when(stateManagerService.setChannelToActive(CHANNEL_ID, USER_ID_1, TEAM_ID)).thenReturn(activeChannel);
         Mockito.when(messageBuilderService.createPhraseMessage(CHANNEL_ID, USER_ID_1, team.getToken())).thenReturn(builder.createPhraseMessage(CHANNEL_ID, USER_ID_1, TOKEN));
         processorService.processNewGameCommand(CHANNEL_ID, USER_ID_1, TEAM_ID);
-        Mockito.verify(restTemplate).postForEntity(URL, httpEntity, JsonNode.class);
+        Mockito.verify(restTemplate).postForEntity(EPHEMERAL_URL, httpEntity, JsonNode.class);
     }
 
     @Test
