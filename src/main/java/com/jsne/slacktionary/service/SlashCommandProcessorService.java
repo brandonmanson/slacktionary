@@ -35,8 +35,11 @@ public class SlashCommandProcessorService {
     }
 
     public JsonNode processJoinCommand(String channelId, String userId) {
-        stateManagerService.addPlayerToActiveChannel(channelId, userId);
-        return builderService.createJoinResponseMessage();
+        if (stateManagerService.addPlayerToActiveChannel(channelId, userId) != null)
+        {
+            return builderService.createJoinResponseMessage();
+        }
+        return builderService.createJoinMessageForActiveUser();
     }
 
     private HttpEntity<JsonNode> setupHttpClient(Channel channel, JsonNode body) {

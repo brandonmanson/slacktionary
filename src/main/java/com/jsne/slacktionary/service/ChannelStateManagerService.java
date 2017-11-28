@@ -81,9 +81,13 @@ public class ChannelStateManagerService {
         if (channels.size() > 0)
         {
             Channel channel = channels.get(0);
-            channel.getPlayers().add(playerId);
-            channelRepository.save(channel);
-            return channel;
+            if (!channel.getActiveUserId().equals(playerId))
+            {
+                channel.getPlayers().add(playerId);
+                channelRepository.save(channel);
+                return channel;
+            }
+            return null;
         }
         else
         {

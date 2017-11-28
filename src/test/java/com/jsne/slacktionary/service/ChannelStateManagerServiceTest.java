@@ -7,6 +7,7 @@ import com.jsne.slacktionary.repository.TeamRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.not;
 
 /**
  * Created by brandonmanson on 11/20/17.
@@ -137,6 +139,17 @@ public class ChannelStateManagerServiceTest {
         assertThat(service.addPlayerToActiveChannel(ACTIVE_CHANNEL_ID, USER_ID)).isEqualTo(null);
     }
 
+    @Test
+    public void userShouldNotBeAddedToPlayerListIfTheyAreActiveUser() {
+        Mockito.when(channelRepository.findByChannelId(ACTIVE_CHANNEL_ID)).thenReturn(activeChannelsList);
+        assertThat(service.addPlayerToActiveChannel(ACTIVE_CHANNEL_ID, USER_ID).getPlayers().size()).isEqualTo(0);
+    }
+
+    @Test
+    public void nullShouldBeReturnedIfActiveUserTriesToJoin() {
+        Mockito.when(channelRepository.findByChannelId(ACTIVE_CHANNEL_ID)).thenReturn(activeChannelsList);
+        assertThat(service.addPlayerToActiveChannel(ACTIVE_CHANNEL_ID, USER_ID)).isEqualTo(null);
+    }
 
 
 }

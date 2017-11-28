@@ -84,10 +84,17 @@ public class SlashCommandProcessorServiceTest {
     }
 
     @Test
-    public void processingJoinCommandShouldReturnJoinMessage() {
+    public void processingJoinCommandForNonActiveUserShouldReturnJoinMessage() {
         Mockito.when(stateManagerService.addPlayerToActiveChannel(CHANNEL_ID, USER_ID_2)).thenReturn(activeChannel);
         Mockito.when(messageBuilderService.createJoinResponseMessage()).thenReturn(builder.createJoinResponseMessage());
         assertEquals(processorService.processJoinCommand(CHANNEL_ID, USER_ID_2), builder.createJoinResponseMessage());
+    }
+
+    @Test
+    public void processingJoinCommandForActiveUserShouldReturnJoinMessageForActiveUser() {
+        Mockito.when(stateManagerService.addPlayerToActiveChannel(CHANNEL_ID, USER_ID_1)).thenReturn(null);
+        Mockito.when(messageBuilderService.createJoinMessageForActiveUser()).thenReturn(builder.createJoinMessageForActiveUser());
+        assertEquals(processorService.processJoinCommand(CHANNEL_ID, USER_ID_1), builder.createJoinMessageForActiveUser());
     }
 
     private void setupHttpClient() {

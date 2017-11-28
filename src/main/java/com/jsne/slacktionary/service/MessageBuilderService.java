@@ -82,6 +82,13 @@ public class MessageBuilderService {
         return node;
     }
 
+    public JsonNode createJoinMessageForActiveUser() {
+        ObjectNode node = mapper.createObjectNode();
+        node.put("response_type", "ephemeral");
+        node.put("text", "You can't join as you're the one responsible for the emojis this time. Good luck!");
+        return node;
+    }
+
     private JsonNode createAttachment(String title, String pretext, String text) {
         ObjectNode attachment = mapper.createObjectNode();
         ArrayNode markdown = mapper.createArrayNode();

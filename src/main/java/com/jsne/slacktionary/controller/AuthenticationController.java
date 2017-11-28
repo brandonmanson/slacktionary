@@ -25,9 +25,6 @@ public class AuthenticationController {
     @Value("${client.secret}")
     private String clientSecret;
 
-    @Value("${redirect.uri}")
-    private String redirectUri;
-
     @Autowired
     RestTemplate restTemplate;
 
