@@ -65,7 +65,7 @@ public class SlashCommandControllerTest {
 
     @Test
     public void controllerShouldPostJoinGameMessage() throws Exception {
-        when(messageBuilderService.createJoinResponseMessage()).thenReturn(builder.createJoinResponseMessage());
+        when(commandProcessorService.processJoinCommand(CHANNEL_ID, USER_ID)).thenReturn(builder.createJoinResponseMessage());
         JsonNode joinResponseMessage = builder.createJoinResponseMessage();
         mockMvc.perform(post("/command")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
@@ -81,6 +81,26 @@ public class SlashCommandControllerTest {
                 .param("trigger_id", "13345224609.738474920.8088930838d88f008e0"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(joinResponseMessage.toString()));
+    }
+
+    @Test
+    public void controllerShouldPostCannotJoinMessage() throws Exception {
+        when(commandProcessorService.processJoinCommand(CHANNEL_ID, USER_ID)).thenReturn(builder.createJoinMessageForActiveUser());
+        JsonNode message = builder.createJoinMessageForActiveUser();
+        mockMvc.perform(post("/command")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                .param("token", "gIkuvaNzQIHg97ATvDxqgjtO")
+                .param("team_id", "T0001")
+                .param("team_domain", "example")
+                .param("channel_id", "C2147483705")
+                .param("channel_name", "test")
+                .param("user_id", "U2147483697")
+                .param("command", "/slacktionary")
+                .param("text", "join")
+                .param("response_url", "https://hooks.slack.com/commands/1234/5678")
+                .param("trigger_id", "13345224609.738474920.8088930838d88f008e0"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(message.toString()));
     }
 
     @Test
