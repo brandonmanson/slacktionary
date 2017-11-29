@@ -41,7 +41,7 @@ public class SlashCommandController {
                 return node;
             } else if (request.getParameter("text").equals("join"))
             {
-                node = builderService.createJoinResponseMessage();
+                node = processorService.processJoinCommand(request.getParameter("channel_id"), request.getParameter("user_id"));
                 return node;
             } else if (request.getParameter("text").equals("guess"))
             {
