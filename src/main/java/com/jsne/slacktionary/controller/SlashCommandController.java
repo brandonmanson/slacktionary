@@ -16,11 +16,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Created by brandonmanson on 11/12/17.
  */
 @Controller
 public class SlashCommandController {
+
+    private Pattern pattern = Pattern.compile("^guess(.*)");
 
     @Autowired
     MessageBuilderService builderService;
@@ -43,9 +48,15 @@ public class SlashCommandController {
             {
                 node = processorService.processJoinCommand(request.getParameter("channel_id"), request.getParameter("user_id"));
                 return node;
-            } else if (request.getParameter("text").equals("guess"))
+            } else if (request.getParameter("text").matches("^guess\\W+(.*)"))
             {
-                node = builderService.createGuessResponseMessage();
+                Matcher matcher = pattern.matcher(request.getParameter("text"));
+                String phrase = null;
+                while (matcher.find())
+                {
+                    phrase = matcher.group(1);
+                }
+                node = processorService.processGuessCommand(request.getParameter("channel_id"), request.getParameter("user_id"), phrase.trim());
                 return node;
             }
             else if (request.getParameter("text").equals("help"))

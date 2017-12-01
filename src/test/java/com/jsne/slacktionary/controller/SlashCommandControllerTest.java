@@ -29,6 +29,7 @@ public class SlashCommandControllerTest {
     private String USER_ID = "U2147483697";
     private String TOKEN = "gIkuvaNzQIHg97ATvDxqgjtO";
     private String TEAM_ID = "T0001";
+    private String OTHER_PHRASE = "guess Horse hearts";
     private MessageBuilder builder = new MessageBuilder();
 
     @Autowired
@@ -105,22 +106,22 @@ public class SlashCommandControllerTest {
 
     @Test
     public void controllerShouldPostGuessResponseMessage() throws Exception {
-        when(messageBuilderService.createGuessResponseMessage()).thenReturn(builder.createGuessResponseMessage());
-        JsonNode joinResponseMessage = builder.createGuessResponseMessage();
+        when(commandProcessorService.processGuessCommand(CHANNEL_ID, USER_ID, "Horse hearts")).thenReturn(builder.createGuessResponseMessage());
+        JsonNode guessResponseMessage = builder.createGuessResponseMessage();
         mockMvc.perform(post("/command")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                 .param("token", "gIkuvaNzQIHg97ATvDxqgjtO")
                 .param("team_id", "T0001")
                 .param("team_domain", "example")
-                .param("channel_id", "C2147483705")
+                .param("channel_id", CHANNEL_ID)
                 .param("channel_name", "test")
-                .param("user_id", "U2147483697")
+                .param("user_id", USER_ID)
                 .param("command", "/slacktionary")
-                .param("text", "guess")
+                .param("text", OTHER_PHRASE)
                 .param("response_url", "https://hooks.slack.com/commands/1234/5678")
                 .param("trigger_id", "13345224609.738474920.8088930838d88f008e0"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(joinResponseMessage.toString()));
+                .andExpect(content().string(guessResponseMessage.toString()));
     }
 
     @Test

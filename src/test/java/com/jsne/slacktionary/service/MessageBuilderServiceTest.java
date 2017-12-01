@@ -65,6 +65,11 @@ public class MessageBuilderServiceTest {
         JsonNode helpMessage = service.createHelpMessage();
         assertEquals(builder.createHelpMessage(), helpMessage);
 
+    }
 
+    @Test
+    public void noWinnerMessageShouldBeReturned() {
+        when(service.createNoWinnerMessage()).thenReturn(builder.createNoWinnerMessage());
+        assertEquals(builder.createNoWinnerMessage(), service.createNoWinnerMessage());
     }
 }

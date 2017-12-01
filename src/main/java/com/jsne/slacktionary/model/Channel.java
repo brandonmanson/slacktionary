@@ -2,6 +2,7 @@ package com.jsne.slacktionary.model;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -25,6 +26,7 @@ public class Channel {
 
     @ElementCollection
     private List<String> players;
+    private HashMap<String, String> guesses;
     private boolean hasActiveGame;
 
     public Channel() {
@@ -36,6 +38,7 @@ public class Channel {
         this.activePhrase = null;
         this.activeUserId = null;
         this.players = new ArrayList<String>();
+        this.guesses = new HashMap<>();
         this.hasActiveGame = false;
     }
 
@@ -77,6 +80,10 @@ public class Channel {
 
     public void setTeam(Team team) {
         this.team = team;
+    }
+
+    public HashMap<String, String> getGuesses() {
+        return guesses;
     }
 
     public void setToActive(String phrase, String userId) {

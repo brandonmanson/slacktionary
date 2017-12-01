@@ -95,6 +95,25 @@ public class ChannelStateManagerService {
         }
     }
 
+    public Channel addGuessToGuessList(String channelId, String userId, String phrase) {
+        List<Channel> channels = channelRepository.findByChannelId(channelId);
+        if (channels.size() > 0)
+        {
+            Channel channel = channels.get(0);
+            if (channel.isHasActiveGame())
+            {
+                if (!channel.getGuesses().containsKey(userId))
+                {
+                    channel.getGuesses().put(userId, phrase);
+                    channelRepository.save(channel);
+                    return channel;
+                }
+                return channel;
+            }
+        }
+        return null;
+    }
+
     private Channel getChannelWithChannelId(List<Channel> channels, String channelId) {
         Optional<Channel> matchingChannel = channels.stream()
                 .filter(channel -> channel.getChannelId().equals(channelId))

@@ -14,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,6 +28,8 @@ public class ChannelStateManagerServiceTest {
 
     private final String PHRASE = "A horse of a different color";
     private final String USER_ID = "U1234567";
+    private final String USER_ID_2 = "U89101112";
+    private final String USER_ID_3 = "U987654321";
     private final String TEAM_ID = "T0001";
     private final String EMPTY_TEAM_ID = "T0002";
     private final String ACTIVE_CHANNEL_ID = "C2147483705";
@@ -36,8 +39,8 @@ public class ChannelStateManagerServiceTest {
     private Team emptyTeam;
     private Channel activeChannel;
     private Channel inactiveChannel;
-    List<Team> teams;
-    List<Team> emptyTeamsList;
+    private List<Team> teams;
+    private List<Team> emptyTeamsList;
     private List<Channel> activeChannelsList;
     private List<Channel> inactiveChannelsList;
     private List<Channel> emptyChannelsList;
@@ -61,6 +64,7 @@ public class ChannelStateManagerServiceTest {
         emptyTeamsList.add(emptyTeam);
         activeChannel = new Channel(ACTIVE_CHANNEL_ID, TOKEN);
         activeChannel.setTeam(team);
+        activeChannel.getGuesses().put(USER_ID, PHRASE);
         activeChannel.setToActive(PHRASE, USER_ID);
         team.getChannels().add(activeChannel);
         inactiveChannel = new Channel(INACTIVE_CHANNEL_ID, TOKEN);
@@ -143,6 +147,24 @@ public class ChannelStateManagerServiceTest {
     public void nullShouldBeReturnedIfActiveUserTriesToJoin() {
         Mockito.when(channelRepository.findByChannelId(ACTIVE_CHANNEL_ID)).thenReturn(activeChannelsList);
         assertThat(service.addPlayerToActiveChannel(ACTIVE_CHANNEL_ID, USER_ID)).isEqualTo(null);
+    }
+
+    @Test
+    public void guessShouldBeAddedToGuessList() {
+        Mockito.when(channelRepository.findByChannelId(ACTIVE_CHANNEL_ID)).thenReturn(activeChannelsList);
+        assertThat(service.addGuessToGuessList(ACTIVE_CHANNEL_ID, USER_ID_2, PHRASE).getGuesses().size()).isEqualTo(2);
+    }
+
+    @Test
+    public void channelShouldBeReturnedIfUserHasAlreadyGuessed() {
+        Mockito.when(channelRepository.findByChannelId(ACTIVE_CHANNEL_ID)).thenReturn(activeChannelsList);
+        assertThat(service.addGuessToGuessList(ACTIVE_CHANNEL_ID, USER_ID, PHRASE).getGuesses().size()).isEqualTo(1);
+    }
+
+    @Test
+    public void nullShouldBeReturnedIfChannelIsInactive() {
+        Mockito.when(channelRepository.findByChannelId(INACTIVE_CHANNEL_ID)).thenReturn(inactiveChannelsList);
+        assertThat(service.addGuessToGuessList(INACTIVE_CHANNEL_ID, USER_ID, PHRASE)).isEqualTo(null);
     }
 
 

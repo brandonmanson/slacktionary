@@ -89,6 +89,13 @@ public class MessageBuilderService {
         return node;
     }
 
+    public JsonNode createNoWinnerMessage() {
+        ObjectNode node = mapper.createObjectNode();
+        node.put("response_type", "in_channel");
+        node.put("text", "Bad luck! No one got it. Start a new game to try again!");
+        return node;
+    }
+
     private JsonNode createAttachment(String title, String pretext, String text) {
         ObjectNode attachment = mapper.createObjectNode();
         ArrayNode markdown = mapper.createArrayNode();

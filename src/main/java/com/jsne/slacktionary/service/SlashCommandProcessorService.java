@@ -9,6 +9,8 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Map;
+
 /**
  * Created by brandonmanson on 11/22/17.
  */
@@ -40,6 +42,34 @@ public class SlashCommandProcessorService {
             return builderService.createJoinResponseMessage();
         }
         return builderService.createJoinMessageForActiveUser();
+    }
+
+    public JsonNode processGuessCommand(String channelId, String userId, String phrase) {
+        Channel channel = stateManagerService.addGuessToGuessList(channelId, userId, phrase);
+        if (channel != null)
+        {
+            if (channel.getGuesses().size() == channel.getPlayers().size())
+            {
+                if (getWinnerFromChannel(channel) != null)
+                {
+                    String winner = getWinnerFromChannel(channel).getKey();
+                    channel.setToInactive();
+                    return builderService.createWinnerNotificationMessage(channelId, winner, channel.getToken());
+                }
+                return builderService.createNoWinnerMessage();
+            }
+            return builderService.createGuessResponseMessage();
+        }
+        return null;
+    }
+
+    private Map.Entry<String, String> getWinnerFromChannel(Channel channel) {
+        Map.Entry<String, String> player = channel.getGuesses().entrySet().stream()
+                .filter(guess -> guess.getValue().equals(channel.getActivePhrase()))
+                .findFirst()
+                .orElse(null);
+        System.out.println("PLAYER " + player);
+        return player;
     }
 
     private HttpEntity<JsonNode> setupHttpClient(Channel channel, JsonNode body) {

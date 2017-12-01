@@ -31,15 +31,20 @@ public class SlashCommandProcessorServiceTest {
 
 
     private String CHANNEL_ID = "C2147483705";
+    private String CHANNEL_ID_2 = "C216783705";
     private String USER_ID_1 = "U2147483697";
     private String USER_ID_2 = "U1234567890";
+    private String USER_ID_3 = "U1799867890";
     private String TEAM_ID = "T001";
     private String TOKEN = "gIkuvaNzQIHg97ATvDxqgjtO";
     private String PHRASE = "A horse of a different color";
+    private String OTHER_PHRASE = "Horse hearts";
     private String MESSAGE_URL = "https://slack.com/api/chat.postMessage";
     private String EPHEMERAL_URL = "https://slack.com/api/chat.postEphemeral";
     private Team team;
     private Channel activeChannel;
+    private Channel activeChannel2;
+    private Channel activeChannel3;
     private HttpEntity httpEntity;
     private ResponseEntity responseEntity;
     private MessageBuilder builder;
@@ -62,7 +67,19 @@ public class SlashCommandProcessorServiceTest {
         builder = new MessageBuilder();
         activeChannel = new Channel(CHANNEL_ID, TOKEN);
         activeChannel.setToActive(PHRASE, USER_ID_1);
-        activeChannel.getPlayers().add("U123456");
+        activeChannel.getPlayers().add(USER_ID_2);
+        activeChannel.getPlayers().add(USER_ID_3);
+        activeChannel.getGuesses().put(USER_ID_2, OTHER_PHRASE);
+        activeChannel.getGuesses().put(USER_ID_3, OTHER_PHRASE);
+        activeChannel2 = new Channel(CHANNEL_ID_2, TOKEN);
+        activeChannel2.setToActive(PHRASE, USER_ID_1);
+        activeChannel2.getPlayers().add(USER_ID_2);
+        activeChannel2.getGuesses().put(USER_ID_2, PHRASE);
+        activeChannel3 = new Channel(CHANNEL_ID, TOKEN);
+        activeChannel3.setToActive(PHRASE, USER_ID_1);
+        activeChannel3.getPlayers().add(USER_ID_2);
+        activeChannel3.getPlayers().add(USER_ID_3);
+
         setupHttpClient();
     }
 
@@ -95,6 +112,27 @@ public class SlashCommandProcessorServiceTest {
         Mockito.when(stateManagerService.addPlayerToActiveChannel(CHANNEL_ID, USER_ID_1)).thenReturn(null);
         Mockito.when(messageBuilderService.createJoinMessageForActiveUser()).thenReturn(builder.createJoinMessageForActiveUser());
         assertEquals(processorService.processJoinCommand(CHANNEL_ID, USER_ID_1), builder.createJoinMessageForActiveUser());
+    }
+
+    @Test
+    public void processingGuessForNonActiveUserShouldReturnGuessRecordedMessage() {
+        Mockito.when(stateManagerService.addGuessToGuessList(CHANNEL_ID, USER_ID_2, OTHER_PHRASE)).thenReturn(activeChannel3);
+        Mockito.when(messageBuilderService.createGuessResponseMessage()).thenReturn(builder.createGuessResponseMessage());
+        assertEquals(builder.createGuessResponseMessage(), processorService.processGuessCommand(CHANNEL_ID, USER_ID_2, OTHER_PHRASE));
+    }
+
+    @Test
+    public void returnNoWinnerMessageWhenAllGuessesHaveBeenRecordedAndNoneAreCorrect() {
+        Mockito.when(stateManagerService.addGuessToGuessList(CHANNEL_ID, USER_ID_2, OTHER_PHRASE)).thenReturn(activeChannel);
+        Mockito.when(messageBuilderService.createNoWinnerMessage()).thenReturn(builder.createNoWinnerMessage());
+        assertEquals(builder.createNoWinnerMessage(), processorService.processGuessCommand(CHANNEL_ID, USER_ID_2, OTHER_PHRASE));
+    }
+
+    @Test
+    public void returnWinnerMessageWhenAllGuessesHaveBeenRecordedAndThereIsAWinner() {
+        Mockito.when(stateManagerService.addGuessToGuessList(CHANNEL_ID_2, USER_ID_2, PHRASE)).thenReturn(activeChannel2);
+        Mockito.when(messageBuilderService.createWinnerNotificationMessage(CHANNEL_ID_2, USER_ID_2, TOKEN)).thenReturn(builder.createWinnerNotificationMessage(CHANNEL_ID_2, USER_ID_2, TOKEN));
+        assertEquals(builder.createWinnerNotificationMessage(CHANNEL_ID_2, USER_ID_2, TOKEN), processorService.processGuessCommand(CHANNEL_ID_2, USER_ID_2, PHRASE));
     }
 
     private void setupHttpClient() {
