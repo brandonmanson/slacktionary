@@ -53,10 +53,17 @@ public class SlashCommandProcessorService {
                 if (getWinnerFromChannel(channel) != null)
                 {
                     String winner = getWinnerFromChannel(channel).getKey();
-                    channel.setToInactive();
-                    return builderService.createWinnerNotificationMessage(channelId, winner, channel.getToken());
+                    Channel updatedChannel = stateManagerService.setChannelToInactive(channelId);
+                    if (updatedChannel != null)
+                    {
+                        return builderService.createWinnerNotificationMessage(channelId, winner, channel.getToken());
+                    }
                 }
-                return builderService.createNoWinnerMessage();
+                Channel updatedChannel = stateManagerService.setChannelToInactive(channelId);
+                if (updatedChannel != null)
+                {
+                    return builderService.createNoWinnerMessage();
+                }
             }
             return builderService.createGuessResponseMessage();
         }

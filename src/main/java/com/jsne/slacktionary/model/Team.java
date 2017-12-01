@@ -35,4 +35,8 @@ public class Team {
     public List<Channel> getChannels() {
         return channels;
     }
+
+    public String getTeamId() {
+        return teamId;
+    }
 }

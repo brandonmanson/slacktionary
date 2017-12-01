@@ -78,6 +78,10 @@ public class Channel {
         this.players = players;
     }
 
+    public Team getTeam() {
+        return team;
+    }
+
     public void setTeam(Team team) {
         this.team = team;
     }
