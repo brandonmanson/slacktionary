@@ -68,7 +68,6 @@ public class SlashCommandProcessorService {
                 .filter(guess -> guess.getValue().equals(channel.getActivePhrase()))
                 .findFirst()
                 .orElse(null);
-        System.out.println("PLAYER " + player);
         return player;
     }
 
