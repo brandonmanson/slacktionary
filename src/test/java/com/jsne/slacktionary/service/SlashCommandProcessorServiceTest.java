@@ -45,6 +45,7 @@ public class SlashCommandProcessorServiceTest {
     private Channel activeChannel;
     private Channel activeChannel2;
     private Channel activeChannel3;
+    private Channel inactiveChannel;
     private HttpEntity httpEntity;
     private ResponseEntity responseEntity;
     private MessageBuilder builder;
@@ -79,6 +80,7 @@ public class SlashCommandProcessorServiceTest {
         activeChannel3.setToActive(PHRASE, USER_ID_1);
         activeChannel3.getPlayers().add(USER_ID_2);
         activeChannel3.getPlayers().add(USER_ID_3);
+        inactiveChannel = new Channel(CHANNEL_ID_2, TOKEN);
 
         setupHttpClient();
     }
@@ -124,6 +126,7 @@ public class SlashCommandProcessorServiceTest {
     @Test
     public void returnNoWinnerMessageWhenAllGuessesHaveBeenRecordedAndNoneAreCorrect() {
         Mockito.when(stateManagerService.addGuessToGuessList(CHANNEL_ID, USER_ID_2, OTHER_PHRASE)).thenReturn(activeChannel);
+        Mockito.when(stateManagerService.setChannelToInactive(CHANNEL_ID)).thenReturn(inactiveChannel);
         Mockito.when(messageBuilderService.createNoWinnerMessage()).thenReturn(builder.createNoWinnerMessage());
         assertEquals(builder.createNoWinnerMessage(), processorService.processGuessCommand(CHANNEL_ID, USER_ID_2, OTHER_PHRASE));
     }
@@ -131,6 +134,7 @@ public class SlashCommandProcessorServiceTest {
     @Test
     public void returnWinnerMessageWhenAllGuessesHaveBeenRecordedAndThereIsAWinner() {
         Mockito.when(stateManagerService.addGuessToGuessList(CHANNEL_ID_2, USER_ID_2, PHRASE)).thenReturn(activeChannel2);
+        Mockito.when(stateManagerService.setChannelToInactive(CHANNEL_ID_2)).thenReturn(inactiveChannel);
         Mockito.when(messageBuilderService.createWinnerNotificationMessage(CHANNEL_ID_2, USER_ID_2, TOKEN)).thenReturn(builder.createWinnerNotificationMessage(CHANNEL_ID_2, USER_ID_2, TOKEN));
         assertEquals(builder.createWinnerNotificationMessage(CHANNEL_ID_2, USER_ID_2, TOKEN), processorService.processGuessCommand(CHANNEL_ID_2, USER_ID_2, PHRASE));
     }
