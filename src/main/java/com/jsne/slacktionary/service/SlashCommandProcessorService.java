@@ -2,6 +2,7 @@ package com.jsne.slacktionary.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.jsne.slacktionary.model.Channel;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -30,6 +31,7 @@ public class SlashCommandProcessorService {
     RestTemplate restTemplate;
 
     public JsonNode processNewGameCommand(String channelId, String userId, String teamId) {
+        System.out.println("SETTING CHANNEL " + channelId + " TO ACTIVE");
         Channel channel = stateManagerService.setChannelToActive(channelId, userId, teamId);
         HttpEntity<JsonNode> entity = setupHttpClient(channel, builderService.createPhraseMessage(channel.getChannelId(), channel.getActiveUserId(), channel.getToken()));
         restTemplate.postForEntity(EPHEMERAL_URL, entity, JsonNode.class);
