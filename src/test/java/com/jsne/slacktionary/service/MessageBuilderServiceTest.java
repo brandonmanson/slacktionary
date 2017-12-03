@@ -2,7 +2,9 @@ package com.jsne.slacktionary.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jsne.slacktionary.model.Channel;
 import com.jsne.slacktionary.util.MessageBuilder;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -21,8 +23,16 @@ public class MessageBuilderServiceTest {
 
     private MessageBuilder builder = new MessageBuilder();
 
+    private Channel channel;
+
     @SpyBean
     MessageBuilderService service;
+
+    @Before
+    public void setup() {
+        channel = new Channel("C678293", "ab457893dg23");
+        channel.setToActive("A horse of a different color", "U123456");
+    }
 
     @Test
     public void newGameMessageShouldBeReturned() {
@@ -33,9 +43,9 @@ public class MessageBuilderServiceTest {
 
     @Test
     public void newPhraseMessageShouldBeReturned() {
-        when(service.createPhraseMessage("channel", "user", "token")).thenReturn(builder.createPhraseMessage("channel", "user", "token"));
-        JsonNode phraseMessage = service.createPhraseMessage("channel", "user", "token");
-        assertEquals(builder.createPhraseMessage("channel", "user", "token"), phraseMessage);
+        when(service.createPhraseMessage(channel, "user", "token")).thenReturn(builder.createPhraseMessage(channel, "user", "token"));
+        JsonNode phraseMessage = service.createPhraseMessage(channel, "user", "token");
+        assertEquals(phraseMessage, builder.createPhraseMessage(channel, "user", "token"));
     }
 
     @Test

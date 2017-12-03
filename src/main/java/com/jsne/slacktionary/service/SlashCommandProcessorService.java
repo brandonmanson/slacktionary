@@ -33,7 +33,14 @@ public class SlashCommandProcessorService {
     public JsonNode processNewGameCommand(String channelId, String userId, String teamId) {
         System.out.println("SETTING CHANNEL " + channelId + " TO ACTIVE");
         Channel channel = stateManagerService.setChannelToActive(channelId, userId, teamId);
-        HttpEntity<JsonNode> entity = setupHttpClient(channel, builderService.createPhraseMessage(channel.getChannelId(), channel.getActiveUserId(), channel.getToken()));
+        System.out.println("CHANNEL CREATED. CURRENT STATUS: "
+                + "\nCHANNEL ID: " + channel.getChannelId()
+                + "\nACTIVE USER: " + channel.getActiveUserId()
+                + "\nACTIVE PHRASE: " + channel.getActivePhrase()
+                + "\nCURRENTLY ACTIVE: " + channel.isHasActiveGame()
+                + "\nPLAYERS: " + channel.getPlayers()
+                + "\nGUESSES: " + channel.getGuesses());
+        HttpEntity<JsonNode> entity = setupHttpClient(channel, builderService.createPhraseMessage(channel, channel.getActiveUserId(), channel.getToken()));
         restTemplate.postForEntity(EPHEMERAL_URL, entity, JsonNode.class);
         return builderService.createNewGameMessage();
     }

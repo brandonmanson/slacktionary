@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.jsne.slacktionary.model.Channel;
 
 /**
  * Created by brandonmanson on 11/16/17.
@@ -26,15 +27,15 @@ public class MessageBuilder {
         return node;
     }
 
-    public JsonNode createPhraseMessage(String channel, String user, String token) {
+    public JsonNode createPhraseMessage(Channel channel, String user, String token) {
         ObjectNode node = mapper.createObjectNode();
         ArrayNode attachments = mapper.createArrayNode();
         ObjectNode attachment = mapper.createObjectNode();
         attachment.put("title", "Your Phrase :eyes:");
-        attachment.put("text", "A horse of a different color");
+        attachment.put("text", channel.getActivePhrase());
         attachments.add(attachment);
         node.put("token", token);
-        node.put("channel", channel);
+        node.put("channel", channel.getChannelId());
         node.put("user", user);
         node.putPOJO("attachments", attachments);
         return node;
