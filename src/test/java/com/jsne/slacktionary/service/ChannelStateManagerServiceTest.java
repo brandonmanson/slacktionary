@@ -64,7 +64,9 @@ public class ChannelStateManagerServiceTest {
         emptyTeamsList.add(emptyTeam);
         activeChannel = new Channel(ACTIVE_CHANNEL_ID, TOKEN);
         activeChannel.setTeam(team);
-        activeChannel.getGuesses().put(USER_ID, PHRASE);
+        activeChannel.getPlayers().add(USER_ID_2);
+        activeChannel.getPlayers().add(USER_ID_3);
+        activeChannel.getGuesses().put(USER_ID_2, PHRASE);
         activeChannel.setToActive(PHRASE, USER_ID);
         team.getChannels().add(activeChannel);
         inactiveChannel = new Channel(INACTIVE_CHANNEL_ID, TOKEN);
@@ -133,8 +135,9 @@ public class ChannelStateManagerServiceTest {
 
     @Test
     public void playerListShouldBeSizeOf1() {
-        Mockito.when(channelRepository.findByChannelId(ACTIVE_CHANNEL_ID)).thenReturn(activeChannelsList);
-        assertThat(service.addPlayerToActiveChannel(ACTIVE_CHANNEL_ID, "U123456789").getPlayers().size()).isEqualTo(1);
+        inactiveChannel.setToActive(PHRASE, USER_ID);
+        Mockito.when(channelRepository.findByChannelId(INACTIVE_CHANNEL_ID)).thenReturn(inactiveChannelsList);
+        assertThat(service.addPlayerToActiveChannel(INACTIVE_CHANNEL_ID, USER_ID_2).getPlayers().size()).isEqualTo(1);
     }
 
     @Test
@@ -152,7 +155,7 @@ public class ChannelStateManagerServiceTest {
     @Test
     public void guessShouldBeAddedToGuessList() {
         Mockito.when(channelRepository.findByChannelId(ACTIVE_CHANNEL_ID)).thenReturn(activeChannelsList);
-        assertThat(service.addGuessToGuessList(ACTIVE_CHANNEL_ID, USER_ID_2, PHRASE).getGuesses().size()).isEqualTo(2);
+        assertThat(service.addGuessToGuessList(ACTIVE_CHANNEL_ID, USER_ID_3, PHRASE).getGuesses().size()).isEqualTo(2);
     }
 
     @Test

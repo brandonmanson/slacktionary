@@ -172,7 +172,7 @@ public class ChannelStateManagerService {
                     + "\nGUESSES: " + channel.getGuesses());
             if (channel.isHasActiveGame())
             {
-                if (!channel.getGuesses().containsKey(userId))
+                if (!channel.getGuesses().containsKey(userId) && channel.getPlayers().contains(userId))
                 {
                     System.out.println("ADDING GUESS TO GUESS LIST");
                     channel.getGuesses().put(userId, phrase);
